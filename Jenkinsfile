@@ -20,7 +20,7 @@ pipeline {
         stage('Update k8s Manifest & Push to Manifest Repo') {
             steps {
                 script {
-                    withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+                    
                     sh """
                         cat deployment.yaml
                         sed -i 's/\${APP_NAME}:\${IMAGE_TAG}//g' deployment.yaml
@@ -29,8 +29,9 @@ pipeline {
                         git config --global user.email "visionary_p@yahoo.com"
                         git add deployment.yaml
                         git commit -m 'Updated the deployment Manifest'
-                        git push https://github.com/claudedevops/gitops-register-app.git HEAD:main
-                        """
+                       """
+                    withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+                        sh 'git push https://github.com/claudedevops/gitops-register-app.git HEAD:main'
                     }
                 }
             }
