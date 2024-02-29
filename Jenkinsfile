@@ -25,6 +25,8 @@ pipeline {
                         cat deployment.yaml
                         sed -i 's/\${APP_NAME}:\${IMAGE_TAG}//g' deployment.yaml
                         cat deployment.yaml
+                        git config --global user.name "claudedevops"
+                        git config --global user.email "visionary_p@yahoo.com"
                         git add deployment.yaml
                         git commit -m 'Updated the deployment Manifest'
                         git push https://github.com/claudedevops/gitops-register-app.git HEAD:main
