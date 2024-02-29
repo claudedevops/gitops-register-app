@@ -17,26 +17,19 @@ pipeline {
             }
         }
 
-        stage('Update the Deployment Tags') {
+        stage('Update k8s Manifest & Push to Manifest Repo') {
             steps {
-                sh """
-                    cat deployment.yaml
-                    sed -i 's/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
-                    cat deployment.yaml
-                """
-            }
-        }
-
-        stage('Push the changed deployment file to Git') {
-            steps {
-                sh """
-                    git config --global user.name 'claudedevops'
-                    git config --global user.email 'visionary_p@yahoo.com'
-                    git add deployment.yaml
-                    git commit -m 'Updated the deployment Manifest'
-                   """
-                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                    sh 'git push https://github.com/claudedevops/gitops-register-app main'
+                script {
+                    withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+                    sh """
+                        cat deployment.yaml
+                        sed -i 's/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
+                        cat deployment.yaml
+                        git add deployment.yaml
+                        git commit -m 'Updated the deployment Manifest'
+                        git push https://github.com/claudedevops/gitops-register-app.git HEAD:main
+                        """
+                    }
                 }
             }
         }
