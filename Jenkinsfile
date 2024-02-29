@@ -23,7 +23,7 @@ pipeline {
                     withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
                     sh """
                         cat deployment.yaml
-                        sed -i 's/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
+                        sed -i 's/\${APP_NAME}:\${IMAGE_TAG}//g' deployment.yaml
                         cat deployment.yaml
                         git add deployment.yaml
                         git commit -m 'Updated the deployment Manifest'
